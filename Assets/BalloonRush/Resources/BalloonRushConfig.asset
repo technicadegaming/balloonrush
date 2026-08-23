@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9f2edc3c130deb42ab333526787a400, type: 3}
+  m_Name: BalloonRushConfig
+  m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Core.GameConfig
+  targetWidth: 1080
+  targetHeight: 1920
+  targetFrameRate: 60
+  buildVersion: 1.3.0
+  enforcePortraitResolutionInPlayer: 1
+  playerFullScreenMode: 1
+  hideCursorInPlayer: 1
+  runInBackground: 1
+  runtimeLogMaxKilobytes: 2048
+  laneSpacing: 2.4
+  spawnY: -6.8
+  despawnY: 6.8
+  hitZoneY: 3.15
+  hitZoneHalfHeight: 0.82
+  balloonPoolSize: 48
+  floatingTextPoolSize: 24
+  resultsTimeout: 12
+  preRoundDelay: 0.4
+  postRoundDelay: 1.2
+  allowDebugShortcutsInRelease: 0
+  payoutConfig: {fileID: 11400000, guid: aad0071c7a647d449ac231593b7a887a, type: 2}
+  difficultyConfig: {fileID: 11400000, guid: e4ecab636fc113c4e87c50aab149cdf9, type: 2}
+  audioConfig: {fileID: 11400000, guid: 9c5503c8ce5cb6046b8c121fd8214d03, type: 2}

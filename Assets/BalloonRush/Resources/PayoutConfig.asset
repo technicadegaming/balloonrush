@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bfdc380ffec416d4ba6bf0dc38fdf9c7, type: 3}
+  m_Name: PayoutConfig
+  m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Core.PayoutConfig
+  visibleTiers: f4010000fa0000006400000032000000190000000a0000000500000001000000
+  greenTickets: 1
+  blueTickets: 5
+  goldenTriggerTickets: 3
+  mysteryMinimum: 2
+  mysteryMaximum: 10
+  jackpotTickets: 500
+  maximumTicketsPerGame: 1000
+  goodTicketMultiplier: 1
+  greatTicketMultiplier: 1.05
+  perfectTicketMultiplier: 1.2
+  combo5Multiplier: 1.05
+  combo10Multiplier: 1.1
+  combo15Multiplier: 1.2
+  combo20Multiplier: 1.35
+  combo30Multiplier: 1.5
+  goldenGreatReward: 50
+  goldenGoodReward: 20
+  goldenMissReward: 5
