@@ -1577,11 +1577,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.HitZone
   halfHeight: 0.82
-  borderRenderers:
-  - {fileID: 823301800}
-  - {fileID: 1965844012}
-  - {fileID: 1805880521}
-  - {fileID: 852275782}
+  borderRenderers: []
   idleColor: {r: 0.1, g: 0.9, b: 1, a: 0.95}
   perfectColor: {r: 1, g: 0.85, b: 0.1, a: 1}
   missColor: {r: 1, g: 0.12, b: 0.18, a: 1}
@@ -2611,6 +2607,7 @@ GameObject:
   - component: {fileID: 509946088}
   - component: {fileID: 509946087}
   - component: {fileID: 509946086}
+  - component: {fileID: 509946089}
   m_Layer: 0
   m_Name: MainGameRoot
   m_TagString: Untagged
@@ -2630,22 +2627,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa86dd2f8714b044e940be84a0994f5d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Core.GameManager
-  roundManager: {fileID: 1015536627}
-  balloonManager: {fileID: 1599447762}
-  balloonSpawner: {fileID: 1152794178}
-  balloonPool: {fileID: 1940062931}
-  laneManager: {fileID: 1189012684}
-  hitZone: {fileID: 296301044}
-  comboManager: {fileID: 47905408}
-  scoreManager: {fileID: 653522734}
-  difficultyManager: {fileID: 1422040136}
-  goldenRoundManager: {fileID: 1252901898}
-  jackpotManager: {fileID: 569631240}
-  uiManager: {fileID: 2045275552}
-  effectsManager: {fileID: 1374191781}
-  screenShake: {fileID: 1374191780}
-  floatingTextPool: {fileID: 1184607355}
-  debugPanelManager: {fileID: 2045275551}
+  roundManager: {fileID: 0}
+  balloonManager: {fileID: 0}
+  balloonSpawner: {fileID: 0}
+  balloonPool: {fileID: 0}
+  laneManager: {fileID: 0}
+  hitZone: {fileID: 0}
+  comboManager: {fileID: 0}
+  scoreManager: {fileID: 0}
+  difficultyManager: {fileID: 0}
+  goldenRoundManager: {fileID: 0}
+  jackpotManager: {fileID: 0}
+  uiManager: {fileID: 0}
+  effectsManager: {fileID: 0}
+  screenShake: {fileID: 0}
+  floatingTextPool: {fileID: 0}
+  debugPanelManager: {fileID: 0}
 --- !u!114 &509946087
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2674,6 +2671,18 @@ Transform:
   - {fileID: 2095534220}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &509946089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 509946085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6e4a9c0f977a24ea701fb4e7391d4a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Core.MainGameRuntimeRepair
 --- !u!1 &530279469
 GameObject:
   m_ObjectHideFlags: 0
@@ -2899,7 +2908,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8568c8ec770d76346ba6c5f3300ad486, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.JackpotManager
-  scoreManager: {fileID: 653522734}
+  scoreManager: {fileID: 0}
 --- !u!1 &572528943
 GameObject:
   m_ObjectHideFlags: 0
@@ -3446,7 +3455,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 377a582a5b81a5d49838b850fb456d2a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.ScoreManager
-  comboManager: {fileID: 47905408}
+  comboManager: {fileID: 0}
 --- !u!1 &661146828
 GameObject:
   m_ObjectHideFlags: 0
@@ -5160,9 +5169,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a37839e4c0904d549847c8345296b2d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Core.RoundManager
-  spawner: {fileID: 1152794178}
-  difficultyManager: {fileID: 1422040136}
-  goldenRoundManager: {fileID: 1252901898}
+  spawner: {fileID: 0}
+  difficultyManager: {fileID: 0}
+  goldenRoundManager: {fileID: 0}
 --- !u!1 &1019036207
 GameObject:
   m_ObjectHideFlags: 0
@@ -5880,19 +5889,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8be30cedaa45a3a4ebc8fff042218449, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.BalloonSpawner
-  pool: {fileID: 1940062931}
-  balloonManager: {fileID: 1599447762}
-  laneManager: {fileID: 1189012684}
-  difficultyManager: {fileID: 1422040136}
-  definitions:
-  - {fileID: 11400000, guid: d5787edf8a00dd44dbfb02a0e2f25cb2, type: 2}
-  - {fileID: 11400000, guid: 08538953f6c92a0408b88b1a358c5cfc, type: 2}
-  - {fileID: 11400000, guid: 1c8d438e0d238464b891c5c6030632b4, type: 2}
-  - {fileID: 11400000, guid: 81a69a68f7a14a049937b6a108d6d4f7, type: 2}
-  - {fileID: 11400000, guid: 05889bf8d6f630440bec77e899ca8e4f, type: 2}
-  - {fileID: 11400000, guid: f87a93696ead043419fcf63fc2d13ce7, type: 2}
-  - {fileID: 11400000, guid: faecf022272a66047aa8deeb9d2b7bea, type: 2}
-  - {fileID: 11400000, guid: cdeded1f7c9d5674592414bc5b32e624, type: 2}
+  pool: {fileID: 0}
+  balloonManager: {fileID: 0}
+  laneManager: {fileID: 0}
+  difficultyManager: {fileID: 0}
+  definitions: []
 --- !u!1 &1158972076
 GameObject:
   m_ObjectHideFlags: 0
@@ -6233,7 +6234,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af19b4d4718ab0f4ebbedf3fde69983b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Effects.FloatingTextPool
-  textPrefab: {fileID: 4908065802141099166, guid: 1058daec18e264740ba3d69cd3c6f737, type: 3}
+  textPrefab: {fileID: 0}
   prewarmCount: 24
 --- !u!4 &1184607356
 Transform:
@@ -6280,13 +6281,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.LaneManager
   laneAnchors:
-  - {fileID: 789528445}
-  - {fileID: 1474373885}
-  - {fileID: 208168913}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   laneHighlights:
-  - {fileID: 2048788336}
-  - {fileID: 822360908}
-  - {fileID: 1655170197}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   selectedColor: {r: 0.1, g: 0.95, b: 1, a: 0.24}
   idleColor: {r: 0.05, g: 0.12, b: 0.3, a: 0.1}
 --- !u!4 &1189012685
@@ -6661,8 +6662,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 096033f8cfa8e2546a071b31b0fa3d4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.GoldenRoundManager
-  spawner: {fileID: 1152794178}
-  jackpotManager: {fileID: 569631240}
+  spawner: {fileID: 0}
+  jackpotManager: {fileID: 0}
 --- !u!1 &1263473974
 GameObject:
   m_ObjectHideFlags: 0
@@ -7003,21 +7004,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1277898204}
   m_CullTransparentMesh: 1
---- !u!115 &1282103662
-MonoScript:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  serializedVersion: 7
-  m_DefaultReferences: {}
-  m_Icon: {fileID: 0}
-  m_Type: 0
-  m_ExecutionOrder: 0
-  m_ClassName: BalloonRushMainGameVisualRebuild
-  m_Namespace: BalloonRush.UI
-  m_AssemblyName: BalloonRush.Runtime
 --- !u!1 &1304114804
 GameObject:
   m_ObjectHideFlags: 0
@@ -7476,7 +7462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1a90b93349e4a444ad31743125a3076, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Effects.ScreenShake
-  shakeTarget: {fileID: 273193339}
+  shakeTarget: {fileID: 0}
 --- !u!114 &1374191781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7489,8 +7475,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9c31ef0509a8d7b4081eb9a65ec18d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Effects.EffectsManager
-  screenShake: {fileID: 1374191780}
-  floatingTextPool: {fileID: 1184607355}
+  screenShake: {fileID: 0}
+  floatingTextPool: {fileID: 0}
   popParticles: {fileID: 0}
   confettiParticles: {fileID: 0}
   goldParticles: {fileID: 0}
@@ -7539,7 +7525,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4822f023192339f4ea07acf915b47ed4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.DifficultyManager
-  config: {fileID: 11400000, guid: e4ecab636fc113c4e87c50aab149cdf9, type: 2}
+  config: {fileID: 0}
 --- !u!1 &1474373884
 GameObject:
   m_ObjectHideFlags: 0
@@ -8076,14 +8062,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45ac681d6e9ef3d42b387512bdc68d69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.BalloonManager
-  laneManager: {fileID: 1189012684}
-  hitZone: {fileID: 296301044}
-  scoreManager: {fileID: 653522734}
-  comboManager: {fileID: 47905408}
-  difficultyManager: {fileID: 1422040136}
-  goldenRoundManager: {fileID: 1252901898}
-  effectsManager: {fileID: 1374191781}
-  uiManager: {fileID: 2045275552}
+  laneManager: {fileID: 0}
+  hitZone: {fileID: 0}
+  scoreManager: {fileID: 0}
+  comboManager: {fileID: 0}
+  difficultyManager: {fileID: 0}
+  goldenRoundManager: {fileID: 0}
+  effectsManager: {fileID: 0}
+  uiManager: {fileID: 0}
 --- !u!1 &1611903249
 GameObject:
   m_ObjectHideFlags: 0
@@ -10315,7 +10301,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1dd4b5d3fc931248a1e31a75f9db18a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Gameplay.BalloonPool
-  balloonPrefab: {fileID: 2108039075139182241, guid: 2628cdfb54a6dc04e98030d2a3ceb59f, type: 3}
+  balloonPrefab: {fileID: 0}
   prewarmCount: 48
 --- !u!1 &1948383595
 GameObject:
@@ -11204,10 +11190,7 @@ GameObject:
   - component: {fileID: 2045275553}
   - component: {fileID: 2045275552}
   - component: {fileID: 2045275551}
-  - component: {fileID: 2045275557}
-  - component: {fileID: 2045275558}
   - component: {fileID: 2045275559}
-  - component: {fileID: 2045275560}
   m_Layer: 0
   m_Name: Gameplay Canvas
   m_TagString: Untagged
@@ -11239,25 +11222,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab1eb7945d6240a4eb950d171cf020f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.UI.UIManager
-  ticketsText: {fileID: 429757809}
-  scoreText: {fileID: 1182679900}
-  timerText: {fileID: 1475415448}
-  comboText: {fileID: 1611903252}
-  multiplierText: {fileID: 1109495235}
-  jackpotText: {fileID: 999880195}
-  comboFill: {fileID: 1051495040}
-  laneIndicators:
-  - {fileID: 1331842054}
-  - {fileID: 191568991}
-  - {fileID: 1864743577}
-  ratingText: {fileID: 667168522}
-  countdownText: {fileID: 1948383596}
-  messageText: {fileID: 150140490}
-  flashOverlay: {fileID: 355184722}
-  goldenRoundBanner: {fileID: 1120022152}
-  goldenRoundTimerText: {fileID: 1726171550}
-  debugPanel: {fileID: 914712637}
-  debugText: {fileID: 956111202}
+  ticketsText: {fileID: 0}
+  scoreText: {fileID: 0}
+  timerText: {fileID: 0}
+  comboText: {fileID: 0}
+  multiplierText: {fileID: 0}
+  jackpotText: {fileID: 0}
+  comboFill: {fileID: 0}
+  laneIndicators: []
+  ratingText: {fileID: 0}
+  countdownText: {fileID: 0}
+  messageText: {fileID: 0}
+  flashOverlay: {fileID: 0}
+  goldenRoundBanner: {fileID: 0}
+  goldenRoundTimerText: {fileID: 0}
+  debugPanel: {fileID: 0}
+  debugText: {fileID: 0}
 --- !u!114 &2045275553
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11359,59 +11339,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &2045275557
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045275550}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 669ae0e9ab8832943842e8f866d0f50e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.UI.BalloonRushReferenceStylePolishV151
-  gameplayFieldWidthScale: 1.18
-  gameplayFieldHeightScale: 1.04
-  hitZoneWidthScale: 1.14
-  hitZoneHeightScale: 1.24
-  darkPanel: {r: 0.019607844, g: 0.05882353, b: 0.17254902, a: 0.972549}
-  cyan: {r: 0.1254902, g: 0.8666667, b: 1, a: 1}
-  magenta: {r: 1, g: 0.16862746, b: 0.75686276, a: 1}
-  gold: {r: 1, g: 0.76862746, b: 0.12941177, a: 1}
-  green: {r: 0.24705882, g: 0.9254902, b: 0.32941177, a: 1}
-  red: {r: 1, g: 0.28235295, b: 0.28235295, a: 1}
-  blue: {r: 0.16862746, g: 0.53333336, b: 1, a: 1}
-  purple: {r: 0.6313726, g: 0.29803923, b: 1, a: 1}
-  orange: {r: 1, g: 0.5764706, b: 0.11764706, a: 1}
---- !u!114 &2045275558
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045275550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ebaef82b3ff56c54cb0e1b03984f8ef5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.UI.BalloonRushArcadePolishV150
-  gameplayFieldWidthScale: 1.16
-  gameplayFieldHeightScale: 1.04
-  hitZoneWidthScale: 1.06
-  hitZoneHeightScale: 1.18
-  panelFill: {r: 0.015686275, g: 0.08627451, b: 0.18039216, a: 0.9607843}
-  panelBorder: {r: 0, g: 0.9019608, b: 1, a: 1}
-  accentFill: {r: 0.047058824, g: 0.32156864, b: 0.4392157, a: 0.9411765}
-  accentBorder: {r: 0.35686275, g: 0.95686275, b: 1, a: 1}
-  blueButton: {r: 0.17254902, g: 0.5058824, b: 1, a: 1}
-  redButton: {r: 0.9411765, g: 0.22352941, b: 0.3254902, a: 1}
-  greenButton: {r: 0.11764706, g: 0.7921569, b: 0.34509805, a: 1}
-  goldPanel: {r: 0.9490196, g: 0.72156864, b: 0.10980392, a: 1}
-  laneColorLeft: {r: 0, g: 0.17254902, b: 0.32941177, a: 0.5882353}
-  laneColorCenter: {r: 0, g: 0.40784314, b: 0.4392157, a: 0.64705884}
-  laneColorRight: {r: 0, g: 0.17254902, b: 0.32941177, a: 0.5882353}
-  hitZoneColor: {r: 0, g: 0.8627451, b: 1, a: 0.4117647}
 --- !u!114 &2045275559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11426,42 +11353,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.UI.BalloonRushMainGameVisualRebuild
   gameplayFieldWidthScale: 1.18
   gameplayFieldHeightScale: 1.03
-  hitZoneWidthScale: 1.12
-  hitZoneHeightScale: 1.24
+  hitZoneHalfHeight: 0.04
   deepNavy: {r: 0.007843138, g: 0.043137256, b: 0.12156863, a: 0.98039216}
   panelNavy: {r: 0.015686275, g: 0.09411765, b: 0.20784314, a: 0.972549}
   cyan: {r: 0, g: 0.8784314, b: 1, a: 1}
-  cyanSoft: {r: 0, g: 0.47058824, b: 0.60784316, a: 0.92156863}
   magenta: {r: 1, g: 0, b: 0.6666667, a: 1}
   blue: {r: 0.13725491, g: 0.5176471, b: 1, a: 1}
   red: {r: 0.92156863, g: 0.16470589, b: 0.28235295, a: 1}
   green: {r: 0.09803922, g: 0.8627451, b: 0.37254903, a: 1}
   gold: {r: 1, g: 0.74509805, b: 0.09803922, a: 1}
   purple: {r: 0.6666667, g: 0.28235295, b: 1, a: 1}
---- !u!114 &2045275560
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2045275550}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1282103662}
-  m_Name: 
-  m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.UI.BalloonRushMainGameVisualRebuild
-  gameplayFieldWidthScale: 1.14
-  gameplayFieldHeightScale: 1.02
-  hitZoneHalfHeight: 0.04
-  deepNavy: {r: 0.007843138, g: 0.03529412, b: 0.10980392, a: 1}
-  panelNavy: {r: 0.015686275, g: 0.08627451, b: 0.20392157, a: 0.98039216}
-  cyan: {r: 0, g: 0.8862745, b: 1, a: 1}
-  magenta: {r: 1, g: 0.13725491, b: 0.7176471, a: 1}
-  blue: {r: 0.16078432, g: 0.5254902, b: 1, a: 1}
-  red: {r: 0.9372549, g: 0.21176471, b: 0.28235295, a: 1}
-  green: {r: 0.1764706, g: 0.8784314, b: 0.35686275, a: 1}
-  gold: {r: 1, g: 0.75686276, b: 0.10980392, a: 1}
-  purple: {r: 0.64705884, g: 0.29803923, b: 1, a: 1}
   orange: {r: 1, g: 0.48235294, b: 0.105882354, a: 1}
 --- !u!1 &2048788335
 GameObject:

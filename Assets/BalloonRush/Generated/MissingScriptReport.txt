@@ -1,0 +1,5 @@
+BALLOON RUSH - MISSING SCRIPT REPORT
+PLAY MODE OBJECT SCAN
+2026-08-23 07:54:42
+------------------------------------------------------------------------
+No missing script components found.

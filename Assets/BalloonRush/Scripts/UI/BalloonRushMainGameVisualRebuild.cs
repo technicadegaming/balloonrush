@@ -28,9 +28,9 @@ namespace BalloonRush.UI
     public sealed class BalloonRushMainGameVisualRebuild : MonoBehaviour
     {
         [Header("Layout")]
-        [SerializeField, Range(1.00f, 1.30f)] private float gameplayFieldWidthScale = 1.14f;
+        [SerializeField, Range(1.00f, 1.30f)] private float gameplayFieldWidthScale = 1.16f;
         [SerializeField, Range(0.95f, 1.12f)] private float gameplayFieldHeightScale = 1.02f;
-        [SerializeField, Range(0.025f, 0.080f)] private float hitZoneHalfHeight = 0.040f;
+        [SerializeField, Range(0.025f, 0.080f)] private float hitZoneHalfHeight = 0.048f;
 
         [Header("Theme")]
         [SerializeField] private Color deepNavy = new Color32(2, 9, 28, 255);
@@ -90,6 +90,7 @@ namespace BalloonRush.UI
         private Sprite roundedButtonBlue;
         private Sprite roundedButtonRed;
         private Sprite roundedButtonGreen;
+        private Sprite roundedButtonFace;
         private Sprite roundedHitZone;
         private Sprite roundedLane;
 
@@ -197,6 +198,7 @@ namespace BalloonRush.UI
             roundedButtonBlue = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(24, 105, 230, 255), cyan, 128, 40, 5, 34);
             roundedButtonRed = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(204, 35, 40, 255), orange, 128, 40, 5, 34);
             roundedButtonGreen = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(24, 185, 72, 255), cyan, 128, 40, 5, 34);
+            roundedButtonFace = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(10, 18, 42, 255), Color.white, 128, 58, 5, 48);
             roundedHitZone = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(0, 164, 197, 42), cyan, 128, 44, 6, 36);
             roundedLane = RoundedSpriteFactory.CreateRoundedPanelSprite(Color.white, Color.white, 128, 40, 1, 34);
         }
@@ -268,6 +270,7 @@ namespace BalloonRush.UI
             CreateSolid("BRUI_LeftEdge", root, new Vector2(0.003f, 0f), new Vector2(0.012f, 1f), magenta);
             CreateSolid("BRUI_RightEdge", root, new Vector2(0.988f, 0f), new Vector2(0.997f, 1f), cyan);
 
+            BuildBackdropDecor();
             BuildHeader();
             BuildComboRail();
             BuildPayoutRail();
@@ -277,13 +280,54 @@ namespace BalloonRush.UI
             BuildTransientFeedback();
         }
 
+        private void BuildBackdropDecor()
+        {
+            // Lightweight decorative rays and stars. Pure presentation: no gameplay interaction.
+            for (int i = 0; i < 12; i++)
+            {
+                float x = 0.08f + i * 0.075f;
+                Color rayColor = i % 3 == 0
+                    ? new Color(magenta.r, magenta.g, magenta.b, 0.035f)
+                    : new Color(cyan.r, cyan.g, cyan.b, 0.028f);
+                RectTransform ray = CreatePanel(
+                    "BRUI_BackRay_" + i,
+                    root,
+                    new Vector2(x, 0.19f),
+                    new Vector2(Mathf.Min(0.98f, x + 0.012f), 0.88f),
+                    roundedTile,
+                    rayColor,
+                    0f);
+                ray.localRotation = Quaternion.Euler(0f, 0f, (i - 5.5f) * 1.8f);
+                ray.SetAsFirstSibling();
+            }
+
+            for (int i = 0; i < 18; i++)
+            {
+                float x = 0.16f + ((i * 37) % 68) / 100f;
+                float y = 0.23f + ((i * 53) % 54) / 100f;
+                float size = 0.006f + (i % 3) * 0.002f;
+                Color starColor = i % 2 == 0
+                    ? new Color(0.35f, 0.90f, 1f, 0.20f)
+                    : new Color(1f, 0.75f, 0.18f, 0.16f);
+                RectTransform star = CreatePanel(
+                    "BRUI_Star_" + i,
+                    root,
+                    new Vector2(x, y),
+                    new Vector2(x + size, y + size),
+                    roundedTile,
+                    starColor,
+                    0f);
+                star.SetAsFirstSibling();
+            }
+        }
+
         private void BuildHeader()
         {
             RectTransform header = CreatePanel(
                 "BRUI_Header",
                 root,
-                new Vector2(0.020f, 0.900f),
-                new Vector2(0.980f, 0.990f),
+                new Vector2(0.016f, 0.895f),
+                new Vector2(0.984f, 0.992f),
                 roundedPanel,
                 Color.white,
                 0.45f);
@@ -328,7 +372,7 @@ namespace BalloonRush.UI
                 "BRUI_Title",
                 titleCard,
                 "<b><color=#FFFFFF>BALLOON</color> <color=#FF3D59>RUSH</color></b>",
-                55f,
+                62f,
                 TextAlignmentOptions.Center,
                 Color.white,
                 true);
@@ -379,8 +423,8 @@ namespace BalloonRush.UI
             RectTransform panel = CreatePanel(
                 "BRUI_ComboRail",
                 root,
-                new Vector2(0.020f, 0.205f),
-                new Vector2(0.145f, 0.820f),
+                new Vector2(0.018f, 0.205f),
+                new Vector2(0.155f, 0.825f),
                 roundedPanelMagenta,
                 Color.white,
                 0.34f);
@@ -435,8 +479,8 @@ namespace BalloonRush.UI
             RectTransform panel = CreatePanel(
                 "BRUI_PayoutRail",
                 root,
-                new Vector2(0.855f, 0.205f),
-                new Vector2(0.980f, 0.820f),
+                new Vector2(0.845f, 0.205f),
+                new Vector2(0.982f, 0.825f),
                 roundedPanelPurple,
                 Color.white,
                 0.34f);
@@ -468,8 +512,8 @@ namespace BalloonRush.UI
                 RectTransform tile = CreatePanel(
                     "BRUI_Payout_" + value,
                     panel,
-                    new Vector2(0.12f, minY),
-                    new Vector2(0.88f, maxY),
+                    new Vector2(0.08f, minY),
+                    new Vector2(0.92f, maxY),
                     tileSprite,
                     tileColor,
                     0.16f);
@@ -520,8 +564,8 @@ namespace BalloonRush.UI
             RectTransform panel = CreatePanel(
                 "BRUI_HitZone",
                 root,
-                new Vector2(0.170f, minY),
-                new Vector2(0.830f, maxY),
+                new Vector2(0.145f, minY),
+                new Vector2(0.855f, maxY),
                 roundedHitZone,
                 Color.white,
                 0.18f);
@@ -541,8 +585,8 @@ namespace BalloonRush.UI
             TMP_Text label = CreateText(
                 "BRUI_HitLabel",
                 panel,
-                "HIT ZONE",
-                24f,
+                "HIT ZONE  -  POP NOW!",
+                27f,
                 TextAlignmentOptions.Center,
                 Color.white,
                 true);
@@ -565,8 +609,8 @@ namespace BalloonRush.UI
             RectTransform deck = CreatePanel(
                 "BRUI_ControlDeck",
                 root,
-                new Vector2(0.020f, 0.015f),
-                new Vector2(0.980f, 0.185f),
+                new Vector2(0.018f, 0.012f),
+                new Vector2(0.982f, 0.190f),
                 roundedPanel,
                 Color.white,
                 0.42f);
@@ -581,9 +625,9 @@ namespace BalloonRush.UI
                 true);
             SetAnchors(caption.rectTransform, new Vector2(0.20f, 0.84f), new Vector2(0.80f, 0.98f));
 
-            CreateControlCard(deck, "LEFT", "<", "LEFT ARROW / A", new Vector2(0.055f, 0.08f), new Vector2(0.305f, 0.82f), roundedButtonBlue);
-            CreateControlCard(deck, "POP", "POP!", "UP ARROW / SPACE", new Vector2(0.375f, 0.04f), new Vector2(0.625f, 0.86f), roundedButtonRed);
-            CreateControlCard(deck, "RIGHT", ">", "RIGHT ARROW / D", new Vector2(0.695f, 0.08f), new Vector2(0.945f, 0.82f), roundedButtonGreen);
+            CreateControlCard(deck, "LEFT", "<", "LEFT ARROW / A", new Vector2(0.045f, 0.08f), new Vector2(0.305f, 0.84f), roundedButtonBlue);
+            CreateControlCard(deck, "POP", "POP!", "UP ARROW / SPACE", new Vector2(0.365f, 0.03f), new Vector2(0.635f, 0.88f), roundedButtonRed);
+            CreateControlCard(deck, "RIGHT", ">", "RIGHT ARROW / D", new Vector2(0.695f, 0.08f), new Vector2(0.955f, 0.84f), roundedButtonGreen);
 
             TMP_Text service = CreateText(
                 "BRUI_ServiceHint",
@@ -598,16 +642,20 @@ namespace BalloonRush.UI
 
         private void CreateControlCard(Transform parent, string label, string main, string hint, Vector2 min, Vector2 max, Sprite sprite)
         {
-            RectTransform card = CreatePanel("BRUI_Control_" + label, parent, min, max, sprite, Color.white, 0.45f);
+            RectTransform card = CreatePanel("BRUI_Control_" + label, parent, min, max, sprite, Color.white, 0.52f);
 
-            TMP_Text mainText = CreateText("BRUI_ControlMain_" + label, card, main, label == "POP" ? 29f : 38f, TextAlignmentOptions.Center, Color.white, true);
-            SetAnchors(mainText.rectTransform, new Vector2(0.05f, 0.40f), new Vector2(0.95f, 0.95f));
+            RectTransform face = CreatePanel("BRUI_ControlFace_" + label, card, new Vector2(0.18f, 0.24f), new Vector2(0.82f, 0.92f), roundedButtonFace, Color.white, 0.35f);
+            Image faceImage = face.GetComponent<Image>();
+            faceImage.color = label == "LEFT" ? blue : (label == "RIGHT" ? green : red);
+
+            TMP_Text mainText = CreateText("BRUI_ControlMain_" + label, face, main, label == "POP" ? 32f : 44f, TextAlignmentOptions.Center, Color.white, true);
+            SetAnchors(mainText.rectTransform, new Vector2(0.05f, 0.12f), new Vector2(0.95f, 0.90f));
 
             TMP_Text labelText = CreateText("BRUI_ControlLabel_" + label, card, label, 18f, TextAlignmentOptions.Center, Color.white, true);
-            SetAnchors(labelText.rectTransform, new Vector2(0.05f, 0.20f), new Vector2(0.95f, 0.48f));
+            SetAnchors(labelText.rectTransform, new Vector2(0.05f, 0.08f), new Vector2(0.95f, 0.26f));
 
-            TMP_Text hintText = CreateText("BRUI_ControlHint_" + label, card, hint, 10f, TextAlignmentOptions.Center, Color.white, false);
-            SetAnchors(hintText.rectTransform, new Vector2(0.04f, 0.03f), new Vector2(0.96f, 0.24f));
+            TMP_Text hintText = CreateText("BRUI_ControlHint_" + label, card, hint, 9f, TextAlignmentOptions.Center, new Color(0.86f, 0.94f, 1f, 0.90f), false);
+            SetAnchors(hintText.rectTransform, new Vector2(0.03f, 0.00f), new Vector2(0.97f, 0.10f));
         }
 
         private void BuildTransientFeedback()
@@ -615,8 +663,8 @@ namespace BalloonRush.UI
             RectTransform ratingPlate = CreatePanel(
                 "BRUI_RatingPlate",
                 root,
-                new Vector2(0.170f, 0.420f),
-                new Vector2(0.830f, 0.505f),
+                new Vector2(0.155f, 0.430f),
+                new Vector2(0.845f, 0.520f),
                 roundedPanelPurple,
                 new Color(1f, 1f, 1f, 0f),
                 0f);
@@ -625,7 +673,7 @@ namespace BalloonRush.UI
                 "BRUI_Rating",
                 ratingPlate,
                 string.Empty,
-                53f,
+                61f,
                 TextAlignmentOptions.Center,
                 Color.white,
                 true);
@@ -794,8 +842,9 @@ namespace BalloonRush.UI
 
             if (comboSubtext != null)
             {
-                comboSubtext.text = safeCombo >= 20 ? "AMAZING!" : safeCombo >= 10 ? "KEEP IT\nGOING!" : "BUILD YOUR\nCOMBO!";
-                comboSubtext.color = safeCombo >= 20 ? gold : new Color(1f, 0.82f, 0.20f);
+                comboSubtext.text = safeCombo >= 20 ? "AMAZING!" : safeCombo >= 10 ? "ON FIRE!" : safeCombo >= 5 ? "KEEP IT\nGOING!" : "BUILD YOUR\nCOMBO!";
+                comboSubtext.color = safeCombo >= 20 ? gold : safeCombo >= 10 ? orange : new Color(1f, 0.82f, 0.20f);
+                comboValue.transform.localScale = safeCombo >= 10 ? Vector3.one * 1.10f : safeCombo >= 5 ? Vector3.one * 1.05f : Vector3.one;
             }
         }
 
@@ -1080,9 +1129,9 @@ namespace BalloonRush.UI
             TintRenderer("Field Left Rail", new Color32(255, 35, 183, 220));
             TintRenderer("Field Right Rail", new Color32(0, 226, 255, 220));
 
-            StyleLane(FindNamed("Lane 1"), new Color32(16, 64, 116, 135), blue);
-            StyleLane(FindNamed("Lane 2"), new Color32(10, 98, 104, 145), cyan);
-            StyleLane(FindNamed("Lane 3"), new Color32(16, 64, 116, 135), purple);
+            StyleLane(FindNamed("Lane 1"), new Color32(4, 24, 52, 190), blue);
+            StyleLane(FindNamed("Lane 2"), new Color32(5, 35, 54, 195), gold);
+            StyleLane(FindNamed("Lane 3"), new Color32(4, 24, 52, 190), green);
 
             // The runtime HUD owns the visible hit-zone treatment. Keep the world hit-zone
             // transform/collider/logic, but hide its old rectangular artwork and label.
@@ -1173,7 +1222,7 @@ namespace BalloonRush.UI
 
             float pulse = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 5.5f);
             hitZonePanel.color = new Color(1f, 1f, 1f, Mathf.Lerp(0.78f, 1f, pulse));
-            hitZonePanel.transform.localScale = Vector3.one * Mathf.Lerp(0.995f, 1.015f, pulse);
+            hitZonePanel.transform.localScale = Vector3.one * Mathf.Lerp(0.990f, 1.028f, pulse);
         }
 
         private void PolishActiveBalloons()
@@ -1197,12 +1246,10 @@ namespace BalloonRush.UI
             Transform cursor = candidate;
             for (int depth = 0; depth < 4 && cursor != null; depth++, cursor = cursor.parent)
             {
-                MonoBehaviour[] behaviours = cursor.GetComponents<MonoBehaviour>();
-                foreach (MonoBehaviour behaviour in behaviours)
-                {
-                    if (behaviour != null && behaviour.GetType().Name.Equals("Balloon", StringComparison.OrdinalIgnoreCase))
-                        return true;
-                }
+                // Query the known gameplay component directly. Avoid broad
+                // GetComponents<MonoBehaviour>() enumeration on pooled objects.
+                if (cursor.GetComponent<Balloon>() != null)
+                    return true;
             }
             return false;
         }
