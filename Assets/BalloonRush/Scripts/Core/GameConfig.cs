@@ -30,7 +30,7 @@ namespace BalloonRush.Core
         [Min(8)] public int floatingTextPoolSize = 24;
 
         [Header("Flow")]
-        [Min(1f)] public float resultsTimeout = 12f;
+        [Min(1f)] public float resultsTimeout = 3f;
         [Min(0.1f)] public float preRoundDelay = 0.4f;
         [Min(0.1f)] public float postRoundDelay = 1.2f;
 

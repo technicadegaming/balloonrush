@@ -28,7 +28,7 @@ MonoBehaviour:
   hitZoneHalfHeight: 0.82
   balloonPoolSize: 48
   floatingTextPoolSize: 24
-  resultsTimeout: 12
+  resultsTimeout: 3
   preRoundDelay: 0.4
   postRoundDelay: 1.2
   allowDebugShortcutsInRelease: 0
