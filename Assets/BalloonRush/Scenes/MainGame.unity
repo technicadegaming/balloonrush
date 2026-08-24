@@ -11191,6 +11191,7 @@ GameObject:
   - component: {fileID: 2045275552}
   - component: {fileID: 2045275551}
   - component: {fileID: 2045275559}
+  - component: {fileID: 2045275560}
   m_Layer: 0
   m_Name: Gameplay Canvas
   m_TagString: Untagged
@@ -11364,6 +11365,18 @@ MonoBehaviour:
   gold: {r: 1, g: 0.74509805, b: 0.09803922, a: 1}
   purple: {r: 0.6666667, g: 0.28235295, b: 1, a: 1}
   orange: {r: 1, g: 0.48235294, b: 0.105882354, a: 1}
+--- !u!114 &2045275560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2045275550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3a8c5d9f90ecf6419c663c81cd1022d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.UI.BalloonRushPresentationFXV182
 --- !u!1 &2048788335
 GameObject:
   m_ObjectHideFlags: 0

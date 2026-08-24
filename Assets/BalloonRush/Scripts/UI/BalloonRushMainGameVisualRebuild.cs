@@ -199,7 +199,7 @@ namespace BalloonRush.UI
             roundedButtonRed = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(204, 35, 40, 255), orange, 128, 40, 5, 34);
             roundedButtonGreen = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(24, 185, 72, 255), cyan, 128, 40, 5, 34);
             roundedButtonFace = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(10, 18, 42, 255), Color.white, 128, 58, 5, 48);
-            roundedHitZone = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(0, 164, 197, 42), cyan, 128, 44, 6, 36);
+            roundedHitZone = RoundedSpriteFactory.CreateRoundedPanelSprite(new Color32(0, 124, 160, 18), cyan, 128, 48, 6, 38);
             roundedLane = RoundedSpriteFactory.CreateRoundedPanelSprite(Color.white, Color.white, 128, 40, 1, 34);
         }
 
@@ -663,8 +663,8 @@ namespace BalloonRush.UI
             RectTransform ratingPlate = CreatePanel(
                 "BRUI_RatingPlate",
                 root,
-                new Vector2(0.155f, 0.430f),
-                new Vector2(0.845f, 0.520f),
+                new Vector2(0.265f, 0.405f),
+                new Vector2(0.735f, 0.465f),
                 roundedPanelPurple,
                 new Color(1f, 1f, 1f, 0f),
                 0f);
@@ -673,7 +673,7 @@ namespace BalloonRush.UI
                 "BRUI_Rating",
                 ratingPlate,
                 string.Empty,
-                61f,
+                42f,
                 TextAlignmentOptions.Center,
                 Color.white,
                 true);
@@ -682,8 +682,8 @@ namespace BalloonRush.UI
             RectTransform messagePlate = CreatePanel(
                 "BRUI_MessagePlate",
                 root,
-                new Vector2(0.160f, 0.505f),
-                new Vector2(0.840f, 0.565f),
+                new Vector2(0.315f, 0.705f),
+                new Vector2(0.685f, 0.745f),
                 roundedPanel,
                 new Color(1f, 1f, 1f, 0f),
                 0f);
@@ -692,7 +692,7 @@ namespace BalloonRush.UI
                 "BRUI_Message",
                 messagePlate,
                 string.Empty,
-                31f,
+                20f,
                 TextAlignmentOptions.Center,
                 gold,
                 true);
@@ -950,7 +950,13 @@ namespace BalloonRush.UI
             if (!enabledRush)
                 return;
 
-            ShowUnifiedMessage("BALLOON RUSH!", orange, 1.35f);
+            // Rush mode is already reflected by gameplay speed/intensity. Avoid a second
+            // large center-screen banner competing with timing feedback.
+            if (comboSubtext != null)
+            {
+                comboSubtext.text = "RUSH MODE!";
+                comboSubtext.color = orange;
+            }
         }
 
         private void HandleJackpotWon(int tickets)
@@ -974,15 +980,15 @@ namespace BalloonRush.UI
             ratingValue.color = color;
             ratingValue.alpha = 1f;
 
-            float duration = 0.72f;
+            float duration = 0.48f;
             float elapsed = 0f;
             while (elapsed < duration)
             {
                 elapsed += Time.unscaledDeltaTime;
                 float t = Mathf.Clamp01(elapsed / duration);
-                float scale = Mathf.Lerp(0.78f, 1.18f, Mathf.Sin(t * Mathf.PI));
+                float scale = 0.94f + Mathf.Sin(t * Mathf.PI) * 0.10f;
                 ratingValue.transform.localScale = Vector3.one * scale;
-                ratingValue.alpha = 1f - Mathf.Max(0f, (t - 0.62f) / 0.38f);
+                ratingValue.alpha = 1f - Mathf.Max(0f, (t - 0.52f) / 0.48f);
                 yield return null;
             }
 
@@ -1129,9 +1135,9 @@ namespace BalloonRush.UI
             TintRenderer("Field Left Rail", new Color32(255, 35, 183, 220));
             TintRenderer("Field Right Rail", new Color32(0, 226, 255, 220));
 
-            StyleLane(FindNamed("Lane 1"), new Color32(4, 24, 52, 190), blue);
-            StyleLane(FindNamed("Lane 2"), new Color32(5, 35, 54, 195), gold);
-            StyleLane(FindNamed("Lane 3"), new Color32(4, 24, 52, 190), green);
+            StyleLane(FindNamed("Lane 1"), new Color32(2, 12, 30, 150), blue);
+            StyleLane(FindNamed("Lane 2"), new Color32(3, 17, 34, 155), gold);
+            StyleLane(FindNamed("Lane 3"), new Color32(2, 12, 30, 150), green);
 
             // The runtime HUD owns the visible hit-zone treatment. Keep the world hit-zone
             // transform/collider/logic, but hide its old rectangular artwork and label.
@@ -1171,7 +1177,7 @@ namespace BalloonRush.UI
                 string n = sr.name.ToLowerInvariant();
                 if (n.Contains("border left") || n.Contains("border right"))
                 {
-                    sr.color = new Color(edgeColor.r, edgeColor.g, edgeColor.b, 0.62f);
+                    sr.color = new Color(edgeColor.r, edgeColor.g, edgeColor.b, 0.82f);
                     continue;
                 }
 
@@ -1181,9 +1187,9 @@ namespace BalloonRush.UI
                 sr.size = size;
 
                 if (n.Contains("glow"))
-                    sr.color = new Color(edgeColor.r, edgeColor.g, edgeColor.b, 0.08f);
+                    sr.color = new Color(edgeColor.r, edgeColor.g, edgeColor.b, 0.12f);
                 else if (n.Contains("inner"))
-                    sr.color = new Color(bodyColor.r, bodyColor.g, bodyColor.b, 0.52f);
+                    sr.color = new Color(bodyColor.r, bodyColor.g, bodyColor.b, 0.30f);
                 else
                     sr.color = bodyColor;
             }
@@ -1221,8 +1227,8 @@ namespace BalloonRush.UI
                 return;
 
             float pulse = 0.5f + 0.5f * Mathf.Sin(Time.unscaledTime * 5.5f);
-            hitZonePanel.color = new Color(1f, 1f, 1f, Mathf.Lerp(0.78f, 1f, pulse));
-            hitZonePanel.transform.localScale = Vector3.one * Mathf.Lerp(0.990f, 1.028f, pulse);
+            hitZonePanel.color = new Color(1f, 1f, 1f, Mathf.Lerp(0.72f, 0.94f, pulse));
+            hitZonePanel.transform.localScale = Vector3.one * Mathf.Lerp(0.996f, 1.014f, pulse);
         }
 
         private void PolishActiveBalloons()
