@@ -85,6 +85,21 @@ namespace BalloonRush.Core
             }
         }
 
+        /// <summary>
+        /// Operator/service action. Clears unplayed credits only and never changes
+        /// lifetime revenue/credit audit counters.
+        /// </summary>
+        public void ClearCredits()
+        {
+            if (Credits == 0)
+            {
+                return;
+            }
+
+            Credits = 0;
+            CreditsChanged?.Invoke(Credits);
+        }
+
         private void HandleCreditPulse(CreditPulseType pulseType)
         {
             OperatorSettings settings = settingsManager != null ? settingsManager.Current : null;

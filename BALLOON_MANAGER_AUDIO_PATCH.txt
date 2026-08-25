@@ -1,0 +1,54 @@
+# BALLOON MANAGER AUDIO PATCH
+
+File:
+Assets/BalloonRush/Scripts/Gameplay/BalloonManager.cs
+
+Inside TryPopSelectedLane(), find this existing block:
+
+    GameServices.Audio?.PlaySfx(AudioCue.BalloonPop, 1f, 0.45f);
+    if (comboManager != null)
+    {
+        float comboPitch = 0.92f + Mathf.Min(0.38f, comboManager.CurrentCombo * 0.012f);
+        GameServices.Audio?.PlaySfx(AudioCue.ComboIncrease, comboPitch, 0.28f);
+    }
+    PlayTimingAudio(rating);
+
+Replace the whole block with:
+
+    // v1.8.4: one primary sound per successful normal pop.
+    // The old build stacked generic pop + combo chirp + timing sound.
+    PlayTimingAudio(rating);
+
+Then replace the existing PlayTimingAudio() method with:
+
+    private static void PlayTimingAudio(TimingRating rating)
+    {
+        switch (rating)
+        {
+            case TimingRating.Perfect:
+                GameServices.Audio?.PlaySfx(AudioCue.PerfectPop, 1f, 0.74f);
+                break;
+
+            case TimingRating.Great:
+                GameServices.Audio?.PlaySfx(AudioCue.GreatPop, 1f, 0.66f);
+                break;
+
+            case TimingRating.Good:
+                GameServices.Audio?.PlaySfx(AudioCue.GoodPop, 1f, 0.58f);
+                break;
+
+            default:
+                GameServices.Audio?.PlaySfx(AudioCue.BalloonPop, 1f, 0.52f);
+                break;
+        }
+    }
+
+KEEP these separate sounds:
+- bomb explosion
+- golden balloon appear
+- golden balloon pop
+- bonus start
+- combo milestone
+- jackpot
+
+Those are important event sounds and should remain audible.

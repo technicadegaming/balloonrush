@@ -13,25 +13,27 @@ MonoBehaviour:
   m_Name: AudioConfig
   m_EditorClassIdentifier: BalloonRush.Runtime::BalloonRush.Audio.AudioConfig
   attractMusic: {fileID: 0}
-  gameplayMusic: {fileID: 0}
+  gameplayMusic: {fileID: 8300000, guid: 685a384c8988be24cafc2956607bff0e, type: 3}
+  gameplayMusicAlt1: {fileID: 8300000, guid: 66affbfb93861f04a87f2328cc9fb67a, type: 3}
+  gameplayMusicAlt2: {fileID: 8300000, guid: b79c8e97a2d64ad4c820aec904677e4e, type: 3}
   rushMusic: {fileID: 0}
   goldenRoundMusic: {fileID: 0}
   jackpotMusic: {fileID: 0}
   resultsMusic: {fileID: 0}
-  balloonPop: {fileID: 0}
-  perfectPop: {fileID: 0}
-  greatPop: {fileID: 0}
-  goodPop: {fileID: 0}
-  miss: {fileID: 0}
-  bombExplosion: {fileID: 0}
-  buttonClick: {fileID: 0}
-  laneMove: {fileID: 0}
-  comboIncrease: {fileID: 0}
-  comboMilestone: {fileID: 0}
-  goldenBalloonAppear: {fileID: 0}
-  goldenBalloonPop: {fileID: 0}
-  bonusStart: {fileID: 0}
-  countdown: {fileID: 0}
-  gameOver: {fileID: 0}
-  ticketCount: {fileID: 0}
-  jackpot: {fileID: 0}
+  balloonPop: {fileID: 8300000, guid: 271e3a50d59f3fb479a948b3ef19c53a, type: 3}
+  perfectPop: {fileID: 8300000, guid: 7a52a9b150b9ecf43bee6a67545640cb, type: 3}
+  greatPop: {fileID: 8300000, guid: e97f6f2d19aad5c4babf11966c9e7191, type: 3}
+  goodPop: {fileID: 8300000, guid: 30f57f124cb7c4e49b32c8cc3e79e31c, type: 3}
+  miss: {fileID: 8300000, guid: 396e789477fb5684aa596a49ba22b3a6, type: 3}
+  bombExplosion: {fileID: 8300000, guid: 0b84b62c0e0a2a144bebb9f71eebf5b9, type: 3}
+  buttonClick: {fileID: 8300000, guid: 1a16ebca30e3a4746945b923b2dcde27, type: 3}
+  laneMove: {fileID: 8300000, guid: c7e06740b3738624c888efaa59e0d3c3, type: 3}
+  comboIncrease: {fileID: 8300000, guid: 4f113fbe16873ae46a93394b1fd5030d, type: 3}
+  comboMilestone: {fileID: 8300000, guid: 82a5f8bebefaa764da06e7b2905b7ae5, type: 3}
+  goldenBalloonAppear: {fileID: 8300000, guid: 61ae35542b77d334cabf262a048fafbd, type: 3}
+  goldenBalloonPop: {fileID: 8300000, guid: e3376efc0feca2e4b8ec8ff9034a80b9, type: 3}
+  bonusStart: {fileID: 8300000, guid: 992c33328c788bf4dbe683507587040c, type: 3}
+  countdown: {fileID: 8300000, guid: 797746665dc3584419f6faf6faeca12c, type: 3}
+  gameOver: {fileID: 8300000, guid: 1e00a77ea9631d84892288bef903e40b, type: 3}
+  ticketCount: {fileID: 8300000, guid: ee9fed16db5dfa747bcfce86be2cbff4, type: 3}
+  jackpot: {fileID: 8300000, guid: 47f8db7785cf6ab4dbbd8d0423c14dc5, type: 3}

@@ -71,13 +71,27 @@ namespace BalloonRush.UI
 
             editable = GameServices.Settings.CreateEditableCopy();
             operatorFont = statusText != null && statusText.font != null ? statusText.font : TMP_Settings.defaultFontAsset;
-            BuildSettingsUI();
+
+            // Cabinet fail-safe: make M / JoystickButton4 and BACK available before
+            // any dynamic settings control is created. A broken field must never trap
+            // an operator inside the service menu.
             BindButtons();
             SubscribeInput();
+            GameServices.State?.ChangeState(GameState.OperatorMenu);
+
+            try
+            {
+                BuildSettingsUI();
+            }
+            catch (Exception exception)
+            {
+                Debug.LogError("Operator Menu UI build failed, but service exit remains active: " + exception);
+                SetStatus("MENU BUILD ERROR - use M / key switch to exit.", Color.red);
+            }
+
             RefreshAllRows();
             RefreshStatistics();
             SetStatus("Operator settings loaded.", new Color(0.35f, 1f, 0.55f));
-            GameServices.State?.ChangeState(GameState.OperatorMenu);
             GameServices.Audio?.PlayMusic(MusicCue.Attract, 0.3f);
         }
 
@@ -149,7 +163,6 @@ namespace BalloonRush.UI
             }
 
             built = true;
-            AddInfoRow("KEYBOARD", "C CREDIT | ENTER/P START | LEFT/RIGHT MOVE\nUP/SPACE POP | M OPERATOR | ESC DEBUG IN GAME / BACK IN MENUS");
             AddHeader("GAME AND CREDIT SETTINGS");
             AddFloatField("Game duration (20-120 sec)", () => editable.gameDuration, value => editable.gameDuration = value);
             AddIntField("Credits per play", () => editable.creditsPerPlay, value => editable.creditsPerPlay = value);
@@ -208,6 +221,13 @@ namespace BalloonRush.UI
             AddFloatField("Master volume (0-1)", () => editable.masterVolume, value => editable.masterVolume = value);
             AddFloatField("Music volume (0-1)", () => editable.musicVolume, value => editable.musicVolume = value);
             AddFloatField("SFX volume (0-1)", () => editable.sfxVolume, value => editable.sfxVolume = value);
+            AddToggleField("Different gameplay song each round", () => editable.gameplayMusicRotationEnabled, value => editable.gameplayMusicRotationEnabled = value);
+            AddFloatField("Gameplay music START pitch", () => editable.gameplayMusicStartPitch, value => editable.gameplayMusicStartPitch = value);
+            AddFloatField("Gameplay music END pitch", () => editable.gameplayMusicEndPitch, value => editable.gameplayMusicEndPitch = value);
+            AddToggleField("Cabinet edge lights", () => editable.cabinetEdgeLightsEnabled, value => editable.cabinetEdgeLightsEnabled = value);
+            AddFloatField("Attract edge flicker intensity (0-1)", () => editable.attractEdgeFlickerIntensity, value => editable.attractEdgeFlickerIntensity = value);
+            AddFloatField("Gameplay edge pulse MIN Hz", () => editable.gameplayEdgePulseMinHz, value => editable.gameplayEdgePulseMinHz = value);
+            AddFloatField("Gameplay edge pulse MAX Hz", () => editable.gameplayEdgePulseMaxHz, value => editable.gameplayEdgePulseMaxHz = value);
             AddToggleField("Reduced screen shake", () => editable.reducedScreenShake, value => editable.reducedScreenShake = value);
             AddToggleField("Reduced flashes", () => editable.reducedFlashes, value => editable.reducedFlashes = value);
 
@@ -385,7 +405,7 @@ namespace BalloonRush.UI
             valueText.enableAutoSizing = true;
             valueText.fontSizeMin = 14f;
             valueText.fontSizeMax = 21f;
-            valueText.enableWordWrapping = true;
+            valueText.textWrappingMode = TextWrappingModes.Normal;
             valueText.overflowMode = TextOverflowModes.Overflow;
         }
 
@@ -428,57 +448,99 @@ namespace BalloonRush.UI
 
         private void AddTextFieldInternal(string label, Func<string> getter, Action<string> setter, TMP_InputField.ContentType contentType)
         {
-            GameObject row = CreateRow(label, 62f);
-            HorizontalLayoutGroup layout = row.AddComponent<HorizontalLayoutGroup>();
-            layout.padding = new RectOffset(16, 16, 7, 7);
-            layout.spacing = 14f;
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlHeight = true;
-            layout.childControlWidth = true;
+            GameObject row = CreateRow(label, 108f);
 
-            TMP_Text labelText = CreateText(row.transform, label, 22f, FontStyles.Normal, TextAlignmentOptions.MidlineLeft);
+            TMP_Text labelText = CreateText(
+                row.transform,
+                label,
+                23f,
+                FontStyles.Bold,
+                TextAlignmentOptions.MidlineLeft);
+
+            RectTransform labelRect = labelText.rectTransform;
+            labelRect.anchorMin = new Vector2(0.025f, 0.46f);
+            labelRect.anchorMax = new Vector2(0.975f, 0.965f);
+            labelRect.offsetMin = new Vector2(10f, 0f);
+            labelRect.offsetMax = new Vector2(-10f, 0f);
+
             labelText.enableAutoSizing = true;
-            labelText.fontSizeMin = 17f;
-            labelText.fontSizeMax = 22f;
-            LayoutElement labelLayout = labelText.gameObject.AddComponent<LayoutElement>();
-            labelLayout.flexibleWidth = 1f;
-            labelLayout.minWidth = 350f;
+            labelText.fontSizeMin = 14f;
+            labelText.fontSizeMax = 23f;
+            labelText.textWrappingMode = TextWrappingModes.Normal;
+            labelText.overflowMode = TextOverflowModes.Overflow;
+            labelText.lineSpacing = -4f;
 
-            TMP_InputField input = CreateInputField(row.transform, contentType);
-            LayoutElement inputLayout = input.gameObject.AddComponent<LayoutElement>();
-            inputLayout.preferredWidth = 220f;
-            inputLayout.minWidth = 200f;
-            input.onEndEdit.AddListener(value => setter(value));
+            TMP_InputField input =
+                CreateInputField(row.transform, contentType);
 
-            Action refresh = () => input.SetTextWithoutNotify(getter());
+            RectTransform inputRect =
+                (RectTransform)input.transform;
+
+            inputRect.anchorMin =
+                new Vector2(0.54f, 0.075f);
+
+            inputRect.anchorMax =
+                new Vector2(0.965f, 0.405f);
+
+            inputRect.offsetMin = Vector2.zero;
+            inputRect.offsetMax = Vector2.zero;
+            input.pointSize = 22f;
+
+            input.onEndEdit.AddListener(
+                value => setter(value));
+
+            Action refresh =
+                () => input.SetTextWithoutNotify(getter());
+
             rowRefreshers.Add(refresh);
             refresh();
         }
 
         private void AddToggleField(string label, Func<bool> getter, Action<bool> setter)
         {
-            GameObject row = CreateRow(label, 62f);
-            HorizontalLayoutGroup layout = row.AddComponent<HorizontalLayoutGroup>();
-            layout.padding = new RectOffset(16, 20, 7, 7);
-            layout.childAlignment = TextAnchor.MiddleCenter;
-            layout.childControlHeight = true;
-            layout.childControlWidth = true;
+            GameObject row = CreateRow(label, 108f);
 
-            TMP_Text labelText = CreateText(row.transform, label, 22f, FontStyles.Normal, TextAlignmentOptions.MidlineLeft);
+            TMP_Text labelText = CreateText(
+                row.transform,
+                label,
+                23f,
+                FontStyles.Bold,
+                TextAlignmentOptions.MidlineLeft);
+
+            RectTransform labelRect = labelText.rectTransform;
+            labelRect.anchorMin = new Vector2(0.025f, 0.46f);
+            labelRect.anchorMax = new Vector2(0.975f, 0.965f);
+            labelRect.offsetMin = new Vector2(10f, 0f);
+            labelRect.offsetMax = new Vector2(-10f, 0f);
+
             labelText.enableAutoSizing = true;
-            labelText.fontSizeMin = 17f;
-            labelText.fontSizeMax = 22f;
-            LayoutElement labelLayout = labelText.gameObject.AddComponent<LayoutElement>();
-            labelLayout.flexibleWidth = 1f;
-            labelLayout.minWidth = 350f;
+            labelText.fontSizeMin = 14f;
+            labelText.fontSizeMax = 23f;
+            labelText.textWrappingMode = TextWrappingModes.Normal;
+            labelText.overflowMode = TextOverflowModes.Overflow;
+            labelText.lineSpacing = -4f;
 
-            Toggle toggle = CreateToggle(row.transform);
-            LayoutElement toggleLayout = toggle.gameObject.AddComponent<LayoutElement>();
-            toggleLayout.preferredWidth = 80f;
-            toggleLayout.preferredHeight = 44f;
-            toggle.onValueChanged.AddListener(value => setter(value));
+            Toggle toggle =
+                CreateToggle(row.transform);
 
-            Action refresh = () => toggle.SetIsOnWithoutNotify(getter());
+            RectTransform toggleRect =
+                (RectTransform)toggle.transform;
+
+            toggleRect.anchorMin =
+                new Vector2(0.78f, 0.055f);
+
+            toggleRect.anchorMax =
+                new Vector2(0.965f, 0.415f);
+
+            toggleRect.offsetMin = Vector2.zero;
+            toggleRect.offsetMax = Vector2.zero;
+
+            toggle.onValueChanged.AddListener(
+                value => setter(value));
+
+            Action refresh =
+                () => toggle.SetIsOnWithoutNotify(getter());
+
             rowRefreshers.Add(refresh);
             refresh();
         }
@@ -516,7 +578,7 @@ namespace BalloonRush.UI
             text.fontStyle = style;
             text.alignment = alignment;
             text.color = Color.white;
-            text.enableWordWrapping = false;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
             return text;
         }
 
@@ -535,7 +597,6 @@ namespace BalloonRush.UI
             TMP_InputField input = inputObject.AddComponent<TMP_InputField>();
             input.contentType = contentType;
             input.lineType = TMP_InputField.LineType.SingleLine;
-            input.pointSize = 26f;
             input.caretColor = Color.white;
             input.selectionColor = new Color(0.15f, 0.65f, 1f, 0.55f);
 

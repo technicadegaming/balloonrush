@@ -61,12 +61,23 @@ namespace BalloonRush.SaveSystem
         public float goodWindow = 0.75f;
         public float x2Duration = 2.5f;
         public float goldenRoundDuration = 10f;
-        public bool passedBalloonBreaksCombo = true;
+        public bool passedBalloonBreaksCombo = false;
 
         [Header("Audio and accessibility")]
         public float masterVolume = 0.9f;
         public float musicVolume = 0.65f;
         public float sfxVolume = 0.9f;
+        public bool cabinetEdgeLightsEnabled = true;
+        public float attractEdgeFlickerIntensity = 0.85f;
+        public float gameplayEdgePulseMinHz = 1.35f;
+        public float gameplayEdgePulseMaxHz = 4.25f;
+        public bool gameplayMusicRotationEnabled = true;
+        [Tooltip("Seconds before crossfading to the next normal gameplay music track.")]
+        public float gameplayMusicRotateSeconds = 8f;
+        [Tooltip("Gameplay music pitch at the beginning of a round.")]
+        public float gameplayMusicStartPitch = 0.98f;
+        [Tooltip("Gameplay music pitch at the end of a round. Pitch follows DifficultyManager progress.")]
+        public float gameplayMusicEndPitch = 1.12f;
         public bool reducedScreenShake;
         public bool reducedFlashes;
 
@@ -150,7 +161,12 @@ namespace BalloonRush.SaveSystem
             goodWindow = 0.75f;
             x2Duration = 2.5f;
             goldenRoundDuration = 10f;
-            passedBalloonBreaksCombo = true;
+            passedBalloonBreaksCombo = false;
+
+            gameplayMusicRotationEnabled = true;
+            gameplayMusicRotateSeconds = 8f;
+            gameplayMusicStartPitch = 0.96f;
+            gameplayMusicEndPitch = 1.18f;
 
             if (preserveHardwareSettings)
             {
@@ -246,6 +262,12 @@ namespace BalloonRush.SaveSystem
             masterVolume = Mathf.Clamp01(masterVolume);
             musicVolume = Mathf.Clamp01(musicVolume);
             sfxVolume = Mathf.Clamp01(sfxVolume);
+            attractEdgeFlickerIntensity = Mathf.Clamp01(attractEdgeFlickerIntensity);
+            gameplayEdgePulseMinHz = Mathf.Clamp(gameplayEdgePulseMinHz, 0.4f, 3f);
+            gameplayEdgePulseMaxHz = Mathf.Clamp(gameplayEdgePulseMaxHz, gameplayEdgePulseMinHz, 5f);
+            gameplayMusicRotateSeconds = Mathf.Clamp(gameplayMusicRotateSeconds, 4f, 30f);
+            gameplayMusicStartPitch = Mathf.Clamp(gameplayMusicStartPitch, 0.75f, 1.15f);
+            gameplayMusicEndPitch = Mathf.Clamp(gameplayMusicEndPitch, gameplayMusicStartPitch, 1.35f);
             baudRate = Mathf.Clamp(baudRate, 1200, 921600);
             ticketsPerPulse = Mathf.Clamp(ticketsPerPulse, 1, 10);
             pulseDelay = Mathf.Clamp(pulseDelay, 0.005f, 0.5f);

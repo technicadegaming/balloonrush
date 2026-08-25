@@ -113,11 +113,18 @@ namespace BalloonRush.Gameplay
             return AddRegularTicketValue(rawAward);
         }
 
-        public void RecordMiss()
+        public void RecordMiss(bool showTimingFeedback = true)
         {
             Misses++;
             comboManager?.RegisterMiss();
-            GameEvents.RaiseTimingJudged(TimingRating.Miss);
+
+            // Only a MISS caused by an actual player POP attempt should drive
+            // the large central timing feedback. A balloon that simply passes
+            // still counts as a miss / combo break, but gets quieter feedback.
+            if (showTimingFeedback)
+            {
+                GameEvents.RaiseTimingJudged(TimingRating.Miss);
+            }
         }
 
         public void RegisterBombHit()

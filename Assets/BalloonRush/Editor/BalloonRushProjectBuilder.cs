@@ -390,7 +390,7 @@ namespace BalloonRush.Editor
             icon.enableAutoSizing = true;
             icon.fontSizeMin = 2f;
             icon.fontSizeMax = 5.5f;
-            icon.enableWordWrapping = false;
+            icon.textWrappingMode = TextWrappingModes.NoWrap;
 
             GameObject stringObject = new GameObject("String");
             stringObject.transform.SetParent(visual.transform, false);
@@ -485,7 +485,7 @@ namespace BalloonRush.Editor
             SetRect(tagline.rectTransform, new Vector2(0.06f, 0.655f), new Vector2(0.94f, 0.705f), Vector2.zero, Vector2.zero);
             EnableAutoSize(tagline, 24f, 35f);
 
-            TMP_Text instruction = CreateText(root, "LEFT/RIGHT SELECT   UP/SPACE POPS   M OPERATOR", 25f, FontStyles.Bold, TextAlignmentOptions.Center, Cyan);
+            TMP_Text instruction = CreateText(root, "LEFT/RIGHT SELECT   UP/SPACE POPS", 25f, FontStyles.Bold, TextAlignmentOptions.Center, Cyan);
             SetRect(instruction.rectTransform, new Vector2(0.05f, 0.617f), new Vector2(0.95f, 0.655f), Vector2.zero, Vector2.zero);
             EnableAutoSize(instruction, 18f, 25f);
 
@@ -583,7 +583,7 @@ namespace BalloonRush.Editor
             TextMeshPro hitLabel = CreateWorldText("Hit Zone Label", hitZoneObject.transform, "HIT ZONE", 2.25f, Color.white, 12);
             hitLabel.transform.localPosition = new Vector3(0f, 0.44f, -0.05f);
             hitLabel.rectTransform.sizeDelta = new Vector2(5.4f, 0.72f);
-            hitLabel.enableWordWrapping = false;
+            hitLabel.textWrappingMode = TextWrappingModes.NoWrap;
             HitZone hitZone = hitZoneObject.AddComponent<HitZone>();
             hitZone.Configure(config.hitZoneHalfHeight, borders);
 
@@ -697,7 +697,7 @@ namespace BalloonRush.Editor
             CreateControlDisplay(controls, new Vector2(0.18f, 0.48f), "<", "LEFT", "LEFT ARROW / A", new Color(0.08f, 0.52f, 1f));
             CreateControlDisplay(controls, new Vector2(0.50f, 0.48f), "POP", "POP", "UP ARROW / SPACE", Red);
             CreateControlDisplay(controls, new Vector2(0.82f, 0.48f), ">", "RIGHT", "RIGHT ARROW / D", Green);
-            TMP_Text serviceHint = CreateText(controls, "M = OPERATOR MENU     ESC = DEBUG / SERVICE PANEL", 15f, FontStyles.Bold, TextAlignmentOptions.Center, new Color(0.55f, 0.82f, 1f));
+            TMP_Text serviceHint = CreateText(controls, "ESC = SERVICE / DEBUG", 15f, FontStyles.Bold, TextAlignmentOptions.Center, new Color(0.55f, 0.82f, 1f));
             SetRect(serviceHint.rectTransform, new Vector2(0.18f, 0.00f), new Vector2(0.82f, 0.075f), Vector2.zero, Vector2.zero);
 
             TMP_Text ratingText = CreateText(canvasRoot, string.Empty, 68f, FontStyles.Bold, TextAlignmentOptions.Center, Color.white);
@@ -736,7 +736,7 @@ namespace BalloonRush.Editor
             SetRect(debugSubheader.rectTransform, new Vector2(0.04f, 0.82f), new Vector2(0.96f, 0.88f), Vector2.zero, Vector2.zero);
             TMP_Text debugText = CreateText(debugPanel, "DEBUG", 25f, FontStyles.Normal, TextAlignmentOptions.TopLeft, Color.white);
             SetRect(debugText.rectTransform, new Vector2(0.08f, 0.07f), new Vector2(0.92f, 0.80f), Vector2.zero, Vector2.zero);
-            debugText.enableWordWrapping = true;
+            debugText.textWrappingMode = TextWrappingModes.Normal;
             debugText.overflowMode = TextOverflowModes.Overflow;
             debugPanel.gameObject.SetActive(false);
 
@@ -812,7 +812,7 @@ namespace BalloonRush.Editor
             RectTransform replayPanel = CreatePanel(root, "Replay Prompt", new Vector2(0.075f, 0.075f), new Vector2(0.925f, 0.19f), Vector2.zero, Vector2.zero, new Color(0.018f, 0.10f, 0.23f, 0.97f), true);
             TMP_Text replay = CreateText(replayPanel, "ENTER OR P TO PLAY AGAIN", 37f, FontStyles.Bold, TextAlignmentOptions.Center, Color.white);
             SetRect(replay.rectTransform, new Vector2(0.03f, 0.35f), new Vector2(0.97f, 0.92f), Vector2.zero, Vector2.zero);
-            TMP_Text replayHint = CreateText(replayPanel, "C = CREDIT     M = OPERATOR MENU", 18f, FontStyles.Bold, TextAlignmentOptions.Center, new Color(0.50f, 0.84f, 1f));
+            TMP_Text replayHint = CreateText(replayPanel, "C = CREDIT", 18f, FontStyles.Bold, TextAlignmentOptions.Center, new Color(0.50f, 0.84f, 1f));
             SetRect(replayHint.rectTransform, new Vector2(0.05f, 0.04f), new Vector2(0.95f, 0.37f), Vector2.zero, Vector2.zero);
 
             TMP_Text countdown = CreateText(root, "RETURNING IN 12", 23f, FontStyles.Normal, TextAlignmentOptions.Center, Cyan);
@@ -844,7 +844,7 @@ namespace BalloonRush.Editor
             TMP_Text title = CreateText(root, "OPERATOR SETTINGS", 48f, FontStyles.Bold, TextAlignmentOptions.Center, Color.white);
             SetRect(title.rectTransform, new Vector2(0.06f, 0.895f), new Vector2(0.94f, 0.95f), Vector2.zero, Vector2.zero);
             AddTextShadow(title, Cyan, new Vector2(4f, -4f));
-            TMP_Text exitHint = CreateText(root, "M OR ESC = RETURN TO ATTRACT     |     CHANGES APPLY AFTER SAVE", 17f, FontStyles.Bold, TextAlignmentOptions.Center, new Color(0.55f, 0.84f, 1f));
+            TMP_Text exitHint = CreateText(root, "ESC = RETURN TO ATTRACT     |     CHANGES APPLY AFTER SAVE", 17f, FontStyles.Bold, TextAlignmentOptions.Center, new Color(0.55f, 0.84f, 1f));
             SetRect(exitHint.rectTransform, new Vector2(0.06f, 0.867f), new Vector2(0.94f, 0.898f), Vector2.zero, Vector2.zero);
 
             TMP_Text settingsTitle = CreateText(root, "MACHINE SETTINGS", 25f, FontStyles.Bold, TextAlignmentOptions.Center, Gold);
@@ -858,7 +858,7 @@ namespace BalloonRush.Editor
             SetRect(statsHeading.rectTransform, new Vector2(0.02f, 0.68f), new Vector2(0.98f, 0.96f), Vector2.zero, Vector2.zero);
             TMP_Text statistics = CreateText(statsPanel, "Statistics", 20f, FontStyles.Bold, TextAlignmentOptions.Center, Color.white);
             SetRect(statistics.rectTransform, new Vector2(0.025f, 0.05f), new Vector2(0.975f, 0.70f), Vector2.zero, Vector2.zero);
-            statistics.enableWordWrapping = true;
+            statistics.textWrappingMode = TextWrappingModes.Normal;
             statistics.overflowMode = TextOverflowModes.Overflow;
             EnableAutoSize(statistics, 14f, 20f);
 
@@ -1030,7 +1030,7 @@ namespace BalloonRush.Editor
             text.alignment = alignment;
             text.color = color;
             text.enableAutoSizing = false;
-            text.enableWordWrapping = false;
+            text.textWrappingMode = TextWrappingModes.NoWrap;
             text.overflowMode = TextOverflowModes.Overflow;
             text.raycastTarget = false;
             return text;

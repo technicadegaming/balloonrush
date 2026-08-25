@@ -632,7 +632,7 @@ namespace BalloonRush.UI
             TMP_Text service = CreateText(
                 "BRUI_ServiceHint",
                 deck,
-                "M = OPERATOR     ESC = SERVICE / DEBUG",
+                string.Empty,
                 11f,
                 TextAlignmentOptions.Center,
                 new Color(0.72f, 0.90f, 1f, 0.85f),

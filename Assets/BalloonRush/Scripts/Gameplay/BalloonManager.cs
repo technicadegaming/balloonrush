@@ -126,16 +126,12 @@ namespace BalloonRush.Gameplay
             hitZone.Flash(rating);
             uiManager?.ShowRating(rating);
             effectsManager?.PlaySuccessfulPop(target.transform.position, definition.VisualColor, rating, ticketAward);
-            GameServices.Audio?.PlaySfx(AudioCue.BalloonPop, 1f, 0.45f);
-            if (comboManager != null)
-            {
-                float comboPitch = 0.92f + Mathf.Min(0.38f, comboManager.CurrentCombo * 0.012f);
-                GameServices.Audio?.PlaySfx(AudioCue.ComboIncrease, comboPitch, 0.28f);
-            }
-            PlayTimingAudio(rating);
-            ApplySpecialBehavior(target, definition, rating);
-            GameEvents.RaiseBalloonPopped(target, rating);
-            target.PlayPopAnimation(rating);
+
+
+// v1.8.4: one primary sound per successful normal pop.
+    // The old build stacked generic pop + combo chirp + timing sound.
+    PlayTimingAudio(rating);
+
         }
 
         public void HandleBalloonPassed(Balloon balloon)
@@ -153,8 +149,9 @@ namespace BalloonRush.Gameplay
             }
             else if (gameplayActive && definition != null && !definition.IsDangerous && settings != null && settings.passedBalloonBreaksCombo)
             {
-                scoreManager?.RecordMiss();
-                uiManager?.ShowRating(TimingRating.Miss);
+                scoreManager?.RecordMiss(false);
+                BalloonRush.UI.BalloonRushMissPopPolishV186.NotifyPassiveMiss(
+                    balloon.LaneIndex);
             }
 
             balloon.ReleaseImmediately();
@@ -324,20 +321,26 @@ namespace BalloonRush.Gameplay
             GameServices.Audio?.PlaySfx(AudioCue.ComboMilestone);
         }
 
-        private static void PlayTimingAudio(TimingRating rating)
+    private static void PlayTimingAudio(TimingRating rating)
+    {
+        switch (rating)
         {
-            switch (rating)
-            {
-                case TimingRating.Perfect:
-                    GameServices.Audio?.PlaySfx(AudioCue.PerfectPop);
-                    break;
-                case TimingRating.Great:
-                    GameServices.Audio?.PlaySfx(AudioCue.GreatPop);
-                    break;
-                case TimingRating.Good:
-                    GameServices.Audio?.PlaySfx(AudioCue.GoodPop);
-                    break;
-            }
+            case TimingRating.Perfect:
+                GameServices.Audio?.PlaySfx(AudioCue.PerfectPop, 1f, 0.74f);
+                break;
+
+            case TimingRating.Great:
+                GameServices.Audio?.PlaySfx(AudioCue.GreatPop, 1f, 0.66f);
+                break;
+
+            case TimingRating.Good:
+                GameServices.Audio?.PlaySfx(AudioCue.GoodPop, 1f, 0.58f);
+                break;
+
+            default:
+                GameServices.Audio?.PlaySfx(AudioCue.BalloonPop, 1f, 0.52f);
+                break;
         }
+    }
     }
 }

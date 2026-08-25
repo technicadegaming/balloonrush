@@ -15,7 +15,7 @@ MonoBehaviour:
   targetWidth: 1080
   targetHeight: 1920
   targetFrameRate: 60
-  buildVersion: 1.3.0
+  buildVersion: 1.9.7a
   enforcePortraitResolutionInPlayer: 1
   playerFullScreenMode: 1
   hideCursorInPlayer: 1

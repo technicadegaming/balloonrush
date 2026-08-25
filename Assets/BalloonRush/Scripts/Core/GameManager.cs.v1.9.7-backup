@@ -1,0 +1,464 @@
+using System;
+using System.Collections;
+using BalloonRush.Audio;
+using BalloonRush.Effects;
+using BalloonRush.Gameplay;
+using BalloonRush.SaveSystem;
+using BalloonRush.UI;
+using UnityEngine;
+
+namespace BalloonRush.Core
+{
+    public sealed class GameManager : MonoBehaviour
+    {
+        [Header("Gameplay systems")]
+        [SerializeField] private RoundManager roundManager;
+        [SerializeField] private BalloonManager balloonManager;
+        [SerializeField] private BalloonSpawner balloonSpawner;
+        [SerializeField] private BalloonPool balloonPool;
+        [SerializeField] private LaneManager laneManager;
+        [SerializeField] private HitZone hitZone;
+        [SerializeField] private ComboManager comboManager;
+        [SerializeField] private ScoreManager scoreManager;
+        [SerializeField] private DifficultyManager difficultyManager;
+        [SerializeField] private GoldenRoundManager goldenRoundManager;
+        [SerializeField] private JackpotManager jackpotManager;
+
+        [Header("Presentation")]
+        [SerializeField] private UIManager uiManager;
+        [SerializeField] private EffectsManager effectsManager;
+        [SerializeField] private ScreenShake screenShake;
+        [SerializeField] private FloatingTextPool floatingTextPool;
+        [SerializeField] private DebugPanelManager debugPanelManager;
+
+        private OperatorSettings settings;
+        private bool initialized;
+        private bool gameplayActive;
+        private bool ending;
+        private bool paused;
+        private string sessionId;
+        private string sessionStartedUtc;
+
+        public ScoreManager ScoreManager => scoreManager;
+        public ComboManager ComboManager => comboManager;
+        public LaneManager LaneManager => laneManager;
+        public BalloonManager BalloonManager => balloonManager;
+        public BalloonPool BalloonPool => balloonPool;
+        public DifficultyManager DifficultyManager => difficultyManager;
+        public GoldenRoundManager GoldenRoundManager => goldenRoundManager;
+        public BalloonSpawner BalloonSpawner => balloonSpawner;
+        public RoundManager RoundManager => roundManager;
+
+        public void Configure(
+            RoundManager round,
+            BalloonManager balloons,
+            BalloonSpawner spawner,
+            BalloonPool pool,
+            LaneManager lanes,
+            HitZone configuredHitZone,
+            ComboManager combo,
+            ScoreManager score,
+            DifficultyManager difficulty,
+            GoldenRoundManager golden,
+            JackpotManager jackpot,
+            UIManager ui,
+            EffectsManager effects,
+            ScreenShake shake,
+            FloatingTextPool textPool,
+            DebugPanelManager debugPanel)
+        {
+            roundManager = round;
+            balloonManager = balloons;
+            balloonSpawner = spawner;
+            balloonPool = pool;
+            laneManager = lanes;
+            hitZone = configuredHitZone;
+            comboManager = combo;
+            scoreManager = score;
+            difficultyManager = difficulty;
+            goldenRoundManager = golden;
+            jackpotManager = jackpot;
+            uiManager = ui;
+            effectsManager = effects;
+            screenShake = shake;
+            floatingTextPool = textPool;
+            debugPanelManager = debugPanel;
+        }
+
+        private IEnumerator Start()
+        {
+            float timeout = 3f;
+            while (!GameServices.IsReady && timeout > 0f)
+            {
+                timeout -= Time.unscaledDeltaTime;
+                yield return null;
+            }
+
+            if (!GameServices.IsReady)
+            {
+                Debug.LogError("Balloon Rush services did not initialize. Returning to Boot scene.");
+                GameBootstrap.Instance?.GoToAttractMode();
+                yield break;
+            }
+
+            InitializeRuntime();
+            yield return StartCoroutine(BeginGameRoutine());
+        }
+
+        private void OnDestroy()
+        {
+            UnsubscribeInput();
+            UnsubscribeGameplayEvents();
+            Time.timeScale = 1f;
+            GameServices.Audio?.StopGameplayMusicRotation();
+            GameServices.Audio?.SetMusicPitch(1f);
+        }
+
+        public void DebugEndGame()
+        {
+            roundManager?.EndRoundNow();
+        }
+
+        public void DebugTriggerJackpot()
+        {
+            int reward = jackpotManager != null ? jackpotManager.ResolveFinalBalloon(TimingRating.Perfect) : 0;
+            scoreManager?.MarkJackpotWon();
+            effectsManager?.PlayJackpot(Vector3.zero);
+            uiManager?.ShowMessage($"DEBUG JACKPOT +{reward}", Color.yellow, 2.5f);
+            GameServices.Audio?.PlaySfx(AudioCue.Jackpot);
+        }
+
+        private void InitializeRuntime()
+        {
+            if (initialized)
+            {
+                return;
+            }
+
+            settings = GameServices.Settings.Current;
+            GameConfig config = GameServices.Config;
+            balloonPool?.Initialize();
+            floatingTextPool?.Initialize();
+            difficultyManager?.Configure(config != null ? config.difficultyConfig : null, settings);
+            comboManager?.Configure(settings != null ? settings.comboTimeout : 2.75f);
+            comboManager?.ResetSession();
+            scoreManager?.Configure(comboManager, config != null ? config.payoutConfig : null);
+            scoreManager?.ResetSession(settings);
+            jackpotManager?.Configure(scoreManager, settings);
+            jackpotManager?.ResetSession();
+            goldenRoundManager?.Configure(balloonSpawner, jackpotManager, settings);
+            roundManager?.Configure(balloonSpawner, difficultyManager, goldenRoundManager, settings);
+            hitZone?.ApplySettings(settings);
+            balloonSpawner?.ApplySettings(settings);
+            balloonManager?.Configure(laneManager, hitZone, scoreManager, comboManager, difficultyManager, goldenRoundManager, effectsManager, uiManager, settings);
+            screenShake?.Configure(Camera.main != null ? Camera.main.transform : null, GameServices.Settings);
+            effectsManager?.ApplySettings(GameServices.Settings);
+            uiManager?.Bind(scoreManager, comboManager, laneManager, roundManager, goldenRoundManager, settings);
+            laneManager?.ResetLane();
+            debugPanelManager?.Configure(this, uiManager);
+
+            SubscribeGameplayEvents();
+            SubscribeInput();
+            initialized = true;
+        }
+
+        private IEnumerator BeginGameRoutine()
+        {
+            sessionId = Guid.NewGuid().ToString("N");
+            sessionStartedUtc = DateTime.UtcNow.ToString("O");
+            GameConfig config = GameServices.Config;
+            yield return new WaitForSecondsRealtime(config != null ? config.preRoundDelay : 0.4f);
+
+            string[] countdown = { "3", "2", "1", "POP!" };
+            for (int i = 0; i < countdown.Length; i++)
+            {
+                uiManager?.ShowCountdown(countdown[i], i == countdown.Length - 1 ? 0.5f : 0.65f);
+                GameServices.Audio?.PlaySfx(AudioCue.Countdown, i == countdown.Length - 1 ? 1.35f : 1f);
+                yield return new WaitForSecondsRealtime(i == countdown.Length - 1 ? 0.45f : 0.72f);
+            }
+
+            gameplayActive = true;
+            balloonManager?.SetGameplayActive(true);
+            comboManager?.SetRunning(true);
+            roundManager?.BeginRound();
+            GameServices.Audio?.StartGameplayMusicRotation();
+            GameEvents.RaiseGameStarted();
+        }
+
+
+        private void Update()
+        {
+            if (!gameplayActive || ending || GameServices.Audio == null)
+            {
+                return;
+            }
+
+            float progress = difficultyManager != null
+                ? difficultyManager.NormalizedProgress
+                : (roundManager != null ? roundManager.NormalizedProgress : 0f);
+
+            float startPitch = settings != null ? settings.gameplayMusicStartPitch : 0.96f;
+            float endPitch = settings != null ? settings.gameplayMusicEndPitch : 1.18f;
+            float pitch = Mathf.Lerp(startPitch, endPitch, Mathf.Clamp01(progress));
+
+            // The final five-second Rush is already near the high end of the curve;
+            // a tiny extra lift makes the audio match the visual/spawn intensity.
+            if (roundManager != null && roundManager.IsRushMode)
+            {
+                pitch += 0.035f;
+            }
+
+            GameServices.Audio.SetMusicPitch(pitch);
+        }
+
+        private void SubscribeGameplayEvents()
+        {
+            if (roundManager != null)
+            {
+                roundManager.RoundFinished -= HandleRoundFinished;
+                roundManager.RoundFinished += HandleRoundFinished;
+                roundManager.RushModeChanged -= HandleRushModeChanged;
+                roundManager.RushModeChanged += HandleRushModeChanged;
+            }
+
+            if (goldenRoundManager != null)
+            {
+                goldenRoundManager.RoundStarted -= HandleGoldenRoundStarted;
+                goldenRoundManager.RoundStarted += HandleGoldenRoundStarted;
+                goldenRoundManager.RoundEnded -= HandleGoldenRoundEnded;
+                goldenRoundManager.RoundEnded += HandleGoldenRoundEnded;
+            }
+
+            if (jackpotManager != null)
+            {
+                jackpotManager.JackpotResolved -= HandleJackpotResolved;
+                jackpotManager.JackpotResolved += HandleJackpotResolved;
+            }
+        }
+
+        private void UnsubscribeGameplayEvents()
+        {
+            if (roundManager != null)
+            {
+                roundManager.RoundFinished -= HandleRoundFinished;
+                roundManager.RushModeChanged -= HandleRushModeChanged;
+            }
+
+            if (goldenRoundManager != null)
+            {
+                goldenRoundManager.RoundStarted -= HandleGoldenRoundStarted;
+                goldenRoundManager.RoundEnded -= HandleGoldenRoundEnded;
+            }
+
+            if (jackpotManager != null)
+            {
+                jackpotManager.JackpotResolved -= HandleJackpotResolved;
+            }
+        }
+
+        private void HandleRushModeChanged(bool active)
+        {
+            if (!gameplayActive || ending || (goldenRoundManager != null && goldenRoundManager.IsActive))
+            {
+                return;
+            }
+
+            if (active)
+            {
+                GameServices.Audio?.StopGameplayMusicRotation();
+                GameServices.Audio?.PlayMusic(MusicCue.Rush, 0.35f);
+            }
+            else
+            {
+                GameServices.Audio?.StartGameplayMusicRotation(0.35f);
+            }
+        }
+
+        private void HandleGoldenRoundStarted()
+        {
+            if (ending)
+            {
+                return;
+            }
+
+            GameServices.Audio?.StopGameplayMusicRotation();
+            GameServices.Audio?.PlayMusic(MusicCue.GoldenRound, 0.25f);
+        }
+
+        private void HandleGoldenRoundEnded()
+        {
+            if (ending || !gameplayActive)
+            {
+                return;
+            }
+
+            bool rush = roundManager != null && roundManager.IsRushMode;
+            if (rush)
+            {
+                GameServices.Audio?.PlayMusic(MusicCue.Rush, 0.35f);
+            }
+            else
+            {
+                GameServices.Audio?.StartGameplayMusicRotation(0.35f);
+            }
+        }
+
+        private void HandleJackpotResolved(int reward, bool wonJackpot)
+        {
+            if (!wonJackpot || ending)
+            {
+                return;
+            }
+
+            GameServices.Audio?.StopGameplayMusicRotation();
+            GameServices.Audio?.PlayMusic(MusicCue.Jackpot, 0.12f);
+        }
+
+        private void HandleRoundFinished()
+        {
+            if (!ending)
+            {
+                StartCoroutine(EndGameRoutine());
+            }
+        }
+
+        private IEnumerator EndGameRoutine()
+        {
+            ending = true;
+            gameplayActive = false;
+            balloonManager?.SetGameplayActive(false);
+            comboManager?.SetRunning(false);
+            balloonSpawner?.StopSpawning();
+            goldenRoundManager?.StopImmediate();
+            GameServices.Audio?.PlaySfx(AudioCue.GameOver);
+            GameServices.Audio?.StopGameplayMusicRotation();
+            GameServices.Audio?.SetMusicPitch(1f);
+            GameServices.Audio?.PlayMusic(MusicCue.Results, 0.4f);
+            uiManager?.ShowMessage("GAME OVER!", Color.white, 1.1f);
+
+            GameConfig config = GameServices.Config;
+            yield return new WaitForSecondsRealtime(config != null ? config.postRoundDelay : 1.2f);
+            balloonManager?.ClearAll();
+            floatingTextPool?.Clear();
+
+            float duration = settings != null ? settings.gameDuration : 35f;
+            GameSessionResult result = scoreManager != null ? scoreManager.CreateResult(duration) : new GameSessionResult();
+            result.sessionId = string.IsNullOrEmpty(sessionId) ? Guid.NewGuid().ToString("N") : sessionId;
+            result.startedUtc = string.IsNullOrEmpty(sessionStartedUtc) ? DateTime.UtcNow.ToString("O") : sessionStartedUtc;
+            result.endedUtc = DateTime.UtcNow.ToString("O");
+            result.creditsRemaining = GameServices.Credits != null ? GameServices.Credits.Credits : 0;
+            if (GameServices.Tickets != null)
+            {
+                result.tickets = GameServices.Tickets.ClampPayout(result.tickets);
+            }
+
+            HighScoreData previousRecords = GameServices.Save != null && GameServices.Save.Data != null
+                ? GameServices.Save.Data.highScores
+                : null;
+            result.previousTopScore = previousRecords != null ? previousRecords.topScore : 0;
+            result.previousMostTickets = previousRecords != null ? previousRecords.mostTickets : 0;
+            result.newHighScore = result.score > result.previousTopScore;
+            result.newTicketRecord = result.tickets > result.previousMostTickets;
+            GameServices.Save?.RecordGame(result);
+            GameEvents.RaiseGameEnded(result);
+            GameServices.Bootstrap?.GoToResults(result);
+        }
+
+        private void SubscribeInput()
+        {
+            if (GameServices.Input == null)
+            {
+                return;
+            }
+
+            GameServices.Input.LeftPressed += HandleLeft;
+            GameServices.Input.RightPressed += HandleRight;
+            GameServices.Input.PopPressed += HandlePop;
+            GameServices.Input.OperatorPressed += HandleOperator;
+            GameServices.Input.BackPressed += HandleBack;
+        }
+
+        private void UnsubscribeInput()
+        {
+            if (GameServices.Input == null)
+            {
+                return;
+            }
+
+            GameServices.Input.LeftPressed -= HandleLeft;
+            GameServices.Input.RightPressed -= HandleRight;
+            GameServices.Input.PopPressed -= HandlePop;
+            GameServices.Input.OperatorPressed -= HandleOperator;
+            GameServices.Input.BackPressed -= HandleBack;
+        }
+
+        private void HandleLeft()
+        {
+            if (!gameplayActive || paused) return;
+            laneManager?.MoveLeft();
+            GameServices.Audio?.PlaySfx(AudioCue.LaneMove);
+        }
+
+        private void HandleRight()
+        {
+            if (!gameplayActive || paused) return;
+            laneManager?.MoveRight();
+            GameServices.Audio?.PlaySfx(AudioCue.LaneMove, 1.1f);
+        }
+
+        private void HandlePop()
+        {
+            if (!gameplayActive || paused) return;
+            balloonManager?.TryPopSelectedLane();
+        }
+
+        private void HandleOperator()
+        {
+            if (ending)
+            {
+                return;
+            }
+
+            ending = true;
+            gameplayActive = false;
+            paused = false;
+            Time.timeScale = 1f;
+            balloonManager?.SetGameplayActive(false);
+            comboManager?.SetRunning(false);
+            balloonSpawner?.StopSpawning();
+            goldenRoundManager?.StopImmediate();
+            UnsubscribeInput();
+            GameServices.Bootstrap?.GoToOperatorMenu();
+        }
+
+        private void HandleBack()
+        {
+            if (ending)
+            {
+                return;
+            }
+
+            if (debugPanelManager != null && debugPanelManager.IsDebugAllowed)
+            {
+                bool debugVisible = debugPanelManager.TogglePanel();
+                paused = debugVisible;
+                Time.timeScale = paused ? 0f : 1f;
+                if (!paused && gameplayActive)
+                {
+                    uiManager?.ShowMessage("GO!", Color.white, 0.55f);
+                }
+                return;
+            }
+
+            // Non-development builds retain a basic pause fallback.
+            if (!gameplayActive)
+            {
+                return;
+            }
+
+            paused = !paused;
+            Time.timeScale = paused ? 0f : 1f;
+            uiManager?.ShowMessage(paused ? "PAUSED" : "GO!", Color.white, paused ? 30f : 0.8f);
+        }
+    }
+}

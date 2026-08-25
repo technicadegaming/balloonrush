@@ -1,0 +1,79 @@
+BALLOON RUSH v1.8.5 — ENHANCEMENT PATCH
+========================================
+
+Built after reviewing the latest balloonrush gameplay recording.
+
+WHAT CHANGES
+------------
+
+VISUAL / ARCADE POLISH
+- Stronger capsule/rounded styling on the existing HUD.
+- Converts the LEFT / POP / RIGHT button faces into circular arcade buttons.
+- Adds animated glow rings around all three buttons.
+- LEFT/RIGHT button rings react when the player changes lanes.
+- POP button ring reacts to every timing judgment.
+- Replaces the previous v1.8.4 side-light layer with a more obvious marquee:
+  * thicker neon side rails
+  * 14 chasing bulbs per side
+  * animated rainbow chase
+  * stronger pop / Perfect / Golden Round / Jackpot reactions
+- Adds a moving scan line inside the selected lane.
+- Adds selected-lane breathing glow.
+- Adds two animated energy bars around the hit zone.
+- Adds expanding impact rings when the player hits/misses.
+- Adds subtle shadow + colored aura to balloons so they stand out from the lane.
+
+AUDIO CLEANUP
+- Adds a real burst limiter for non-critical SFX.
+- Prevents repeated UI clicks from stacking.
+- Voice clips replace the previous voice clip instead of talking over each other.
+- Important sounds such as jackpot/bomb/golden events can replace an older instance.
+- Low-value sounds (lane movement, button clicks, ticket ticks) are quieter.
+- Normal balloon pops now get ONE primary timing sound.
+- Combo milestone sounds own that moment instead of also stacking a normal pop sound.
+- Golden-round trigger no longer plays GoldenPop + BonusStart on top of each other.
+- Final jackpot balloon plays the jackpot cue by itself when Perfect.
+
+INSTALL — EASIEST METHOD
+------------------------
+1. Close Play Mode in Unity.
+2. Extract this ZIP into the ROOT of the Balloon Rush Unity project:
+   C:\Projects\BalloonRushUnity6
+   (or whatever folder contains Assets, Packages, and ProjectSettings)
+3. Run:
+   APPLY_PATCH.bat
+4. Return to Unity.
+5. Wait for compilation.
+6. Open MainGame and press Play.
+
+The installer automatically makes a timestamped backup inside:
+Backups\BalloonRush_v1.8.5_YYYYMMDD_HHMMSS
+
+NO MANUAL SCENE WIRING IS REQUIRED.
+
+FILES ADDED
+-----------
+Assets/BalloonRush/Scripts/UI/BalloonRushArcadeJuiceV185.cs
+Assets/BalloonRush/Scripts/Audio/BalloonRushAudioGateV185.cs
+
+FILES EDITED BY THE INSTALLER
+-----------------------------
+Assets/BalloonRush/Scripts/Audio/AudioManager.cs
+Assets/BalloonRush/Scripts/Gameplay/BalloonManager.cs
+
+ROLLBACK
+--------
+The patch creates backup copies of AudioManager.cs and BalloonManager.cs
+before changing them. Copy those backup files back into their original
+folders if you want to undo the audio portion.
+
+Delete these two files to remove the new presentation/audio-gate components:
+- BalloonRushArcadeJuiceV185.cs
+- BalloonRushAudioGateV185.cs
+
+NOTES
+-----
+The visual script disables the earlier BalloonRushCabinetEffectsV184 runtime
+component if it is present, so the old and new side-light layers do not fight
+each other. It does NOT disable BalloonRushMainGameVisualRebuild; the main HUD
+continues to be driven by the existing unified visual system.
